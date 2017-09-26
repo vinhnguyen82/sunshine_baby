@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,5 +68,12 @@ public class SpaceEntityServiceTest {
         spaceEntityService.updateSpace(spaceEntity, 123);
 
         verify(repository).save(spaceEntity);
+    }
+
+    @Test
+    public void removeSpace_RemovesASpace() {
+        spaceEntityService.removeSpace(123);
+
+        verify(repository).delete(123);
     }
 }

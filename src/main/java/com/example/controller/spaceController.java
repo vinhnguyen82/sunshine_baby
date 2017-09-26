@@ -38,4 +38,10 @@ public class spaceController {
     public SpaceEntity updateSpace(@RequestBody SpaceEntity spaceEntity, @PathVariable int id) {
         return spaceEntityService.updateSpace(spaceEntity, id);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removeSpace(@PathVariable int id) {
+        spaceEntityService.removeSpace(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

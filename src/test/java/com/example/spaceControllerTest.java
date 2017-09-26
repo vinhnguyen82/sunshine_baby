@@ -19,6 +19,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -104,7 +105,7 @@ public class spaceControllerTest {
     }
 
     @Test
-    public void updateASpaceReturnsAnUpdatedSpace() throws Exception {
+    public void updateSpaceReturnsAnUpdatedSpace() throws Exception {
         SpaceEntity newSpace = SpaceEntity.builder()
                 .name("bob")
                 .disk(120)
@@ -125,5 +126,23 @@ public class spaceControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", is(spaceId)));
 
         assertThat(spaceRepository.findAll().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void removeSpaceDeletesTheSpaceWithTheGivenId() throws Exception {
+        SpaceEntity newSpace = SpaceEntity.builder()
+                .name("bob")
+                .disk(120)
+                .memory(10)
+                .build();
+
+        int spaceId = spaceRepository.save(newSpace).getId();
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete("/spaces/" + spaceId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        assertThat(spaceRepository.findAll().size()).isEqualTo(0);
     }
 }

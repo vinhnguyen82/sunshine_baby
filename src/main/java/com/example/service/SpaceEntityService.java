@@ -33,4 +33,8 @@ public class SpaceEntityService {
         spaceEntity.setId(id);
         return repository.save(spaceEntity);
     }
+
+    public void removeSpace(int id) {
+        repository.delete(id);
+    }
 }
