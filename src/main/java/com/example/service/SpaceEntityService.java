@@ -4,6 +4,8 @@ import com.example.model.SpaceEntity;
 import com.example.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SpaceEntityService {
 
@@ -16,5 +18,13 @@ public class SpaceEntityService {
 
     public SpaceEntity createSpace(SpaceEntity spaceEntity) {
         return repository.save(spaceEntity);
+    }
+
+    public List<SpaceEntity> getSpaces() {
+        return repository.findAll();
+    }
+
+    public SpaceEntity getSpace(int id) {
+        return repository.findOne(id);
     }
 }

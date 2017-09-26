@@ -1,7 +1,7 @@
 package com.example;
 
+import com.example.model.SpaceEntity;
 import com.example.repository.SpaceRepository;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,16 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.transaction.Transactional;
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class spaceControllerTest {
 
     @Autowired
@@ -45,8 +49,57 @@ public class spaceControllerTest {
     }
 
     @Test
-    @Ignore
-    public void createSpaceReturnsA400WhenInvalidCriteriaIsGiven() {
+    public void createSpaceReturnsA400WhenBadRequestIsMade() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/spaces")
+                .contentType(MediaType.APPLICATION_JSON);
 
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        assertThat(spaceRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void getSpacesReturnsAListOfSpaces() throws Exception {
+        SpaceEntity space1 = SpaceEntity.builder()
+                .name("bob")
+                .disk(120)
+                .build();
+        SpaceEntity space2 = SpaceEntity.builder()
+                .name("leila")
+                .disk(100)
+                .build();
+
+        spaceRepository.save(Arrays.asList(space1, space2));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/spaces")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", is("bob")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].disk", is(120)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name", is("leila")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].disk", is(100)));
+    }
+
+    @Test
+    public void getSpaceReturnsASpaceWhenItReceivesAnIdOfASpaceEntity() throws Exception {
+        SpaceEntity space = SpaceEntity.builder()
+                .name("bob")
+                .disk(120)
+                .memory(10)
+                .build();
+
+        int spaceId = spaceRepository.save(space).getId();
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/spaces/" + spaceId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is("bob")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.disk", is(120)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.memory", is(10)));
     }
 }
