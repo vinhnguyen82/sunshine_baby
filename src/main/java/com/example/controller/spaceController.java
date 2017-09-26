@@ -30,17 +30,32 @@ public class spaceController {
     }
 
     @GetMapping("/{id}")
-    public SpaceEntity getSpace(@PathVariable int id) {
-        return spaceEntityService.getSpace(id);
+    public ResponseEntity<SpaceEntity> getSpace(@PathVariable int id) {
+        SpaceEntity spaceEntity = spaceEntityService.getSpace(id);
+
+        if (null == spaceEntity) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(spaceEntity, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public SpaceEntity updateSpace(@RequestBody SpaceEntity spaceEntity, @PathVariable int id) {
-        return spaceEntityService.updateSpace(spaceEntity, id);
+    public ResponseEntity<SpaceEntity> updateSpace(@RequestBody SpaceEntity spaceEntity, @PathVariable int id) {
+        SpaceEntity oldSpaceEntity = spaceEntityService.getSpace(id);
+
+        if (null == oldSpaceEntity) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(spaceEntityService.updateSpace(spaceEntity, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeSpace(@PathVariable int id) {
+        SpaceEntity spaceEntity = spaceEntityService.getSpace(id);
+
+        if (null == spaceEntity) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         spaceEntityService.removeSpace(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

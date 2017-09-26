@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -105,6 +104,15 @@ public class spaceControllerTest {
     }
 
     @Test
+    public void getSpaceReturnsA404StatusWhenTheGivenIdDoesNotMatchAnySpaceEntities() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/spaces/" + 123)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
     public void updateSpaceReturnsAnUpdatedSpace() throws Exception {
         SpaceEntity newSpace = SpaceEntity.builder()
                 .name("bob")
@@ -129,6 +137,16 @@ public class spaceControllerTest {
     }
 
     @Test
+    public void updateSpaceReturns404WhenTheGivenIdDoesNotMatchAnyEntities() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch("/spaces/" + 12)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"abstract\",\"disk\":10,\"memory\":10}");
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
     public void removeSpaceDeletesTheSpaceWithTheGivenId() throws Exception {
         SpaceEntity newSpace = SpaceEntity.builder()
                 .name("bob")
@@ -144,5 +162,14 @@ public class spaceControllerTest {
         mockMvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
         assertThat(spaceRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void removeSpaceReturns404WHenTheGivenIdDoesNotMachAnyEntities() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete("/spaces/" + 11)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }
