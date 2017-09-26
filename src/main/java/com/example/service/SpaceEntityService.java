@@ -4,6 +4,7 @@ import com.example.model.SpaceEntity;
 import com.example.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -24,7 +25,12 @@ public class SpaceEntityService {
         return repository.findAll();
     }
 
-    public SpaceEntity getSpace(int id) {
+    public SpaceEntity getSpace(int id) throws EntityNotFoundException {
         return repository.findOne(id);
+    }
+
+    public SpaceEntity updateSpace(SpaceEntity spaceEntity, int id) {
+        spaceEntity.setId(id);
+        return repository.save(spaceEntity);
     }
 }

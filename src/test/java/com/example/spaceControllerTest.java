@@ -102,4 +102,28 @@ public class spaceControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.disk", is(120)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.memory", is(10)));
     }
+
+    @Test
+    public void updateASpaceReturnsAnUpdatedSpace() throws Exception {
+        SpaceEntity newSpace = SpaceEntity.builder()
+                .name("bob")
+                .disk(120)
+                .memory(10)
+                .build();
+
+        int spaceId = spaceRepository.save(newSpace).getId();
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch("/spaces/" + spaceId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"abstract\",\"disk\":10,\"memory\":10}");
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is("abstract")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.disk", is(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.memory", is(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", is(spaceId)));
+
+        assertThat(spaceRepository.findAll().size()).isEqualTo(1);
+    }
 }

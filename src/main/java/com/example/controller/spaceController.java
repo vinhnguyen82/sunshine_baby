@@ -30,7 +30,12 @@ public class spaceController {
     }
 
     @GetMapping("/{id}")
-    public SpaceEntity getSpace(@PathVariable int id) throws Exception {
+    public SpaceEntity getSpace(@PathVariable int id) {
         return spaceEntityService.getSpace(id);
+    }
+
+    @PatchMapping("/{id}")
+    public SpaceEntity updateSpace(@RequestBody SpaceEntity spaceEntity, @PathVariable int id) {
+        return spaceEntityService.updateSpace(spaceEntity, id);
     }
 }

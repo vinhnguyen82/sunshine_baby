@@ -58,4 +58,14 @@ public class SpaceEntityServiceTest {
         verify(repository).findOne(12345);
     }
 
+    @Test
+    public void updateSpace_ReturnsAnUpdatedSpace() {
+        SpaceEntity spaceEntity = SpaceEntity.builder().build();
+
+        when(repository.save(any(SpaceEntity.class))).thenReturn(spaceEntity);
+
+        spaceEntityService.updateSpace(spaceEntity, 123);
+
+        verify(repository).save(spaceEntity);
+    }
 }
