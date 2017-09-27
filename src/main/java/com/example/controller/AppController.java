@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/spaces/{spaceId}/apps")
 public class AppController {
@@ -22,5 +24,13 @@ public class AppController {
         AppEntity newAppEntity = appEntityService.createApp(appEntity, spaceId);
 
         return new ResponseEntity<>(newAppEntity, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AppEntity>> getAllApps(@PathVariable int spaceId) {
+
+        List<AppEntity> appEntities = appEntityService.findAllApps(spaceId);
+
+        return new ResponseEntity<>(appEntities, HttpStatus.OK);
     }
 }

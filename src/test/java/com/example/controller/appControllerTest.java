@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -36,8 +38,6 @@ public class appControllerTest {
     @Autowired
     private AppRepository appRepository;
 
-
-
     @Test
     public void createAppReturnsANewAppInTheGivenSpace() throws Exception {
         SpaceEntity spaceEntity = SpaceEntity.builder()
@@ -50,7 +50,7 @@ public class appControllerTest {
 
         int spaceId = spaceEntity.getId();
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/spaces/" + spaceId + "/apps" )
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/spaces/" + spaceId + "/apps")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\":\"bob\",\"diskAlloc\":120,\"memoryAlloc\":10}");
 
@@ -63,4 +63,59 @@ public class appControllerTest {
         assertThat(appRepository.findAll().size()).isEqualTo(1);
     }
 
+    @Test
+    public void getAllAppsReturnsAllAppsWithinAGivenSpaceId() throws Exception {
+        SpaceEntity spaceEntity = SpaceEntity.builder()
+                .name("Chad")
+                .disk(1024)
+                .memory(512)
+                .build();
+
+        SpaceEntity spaceEntity2 = SpaceEntity.builder()
+                .name("space2")
+                .disk(1024)
+                .memory(512)
+                .build();
+
+        spaceRepository.save(Arrays.asList(spaceEntity, spaceEntity2));
+
+        AppEntity appEntity1 = AppEntity.builder()
+                .name("app1")
+                .diskAlloc(10)
+                .memoryAlloc(1)
+                .spaceId(spaceEntity.getId())
+                .build();
+
+        AppEntity appEntity2 = AppEntity.builder()
+                .name("app2")
+                .diskAlloc(15)
+                .memoryAlloc(1)
+                .spaceId(spaceEntity2.getId())
+                .build();
+
+        AppEntity appEntity3 = AppEntity.builder()
+                .name("app3")
+                .diskAlloc(20)
+                .memoryAlloc(1)
+                .spaceId(spaceEntity.getId())
+                .build();
+
+        appRepository.save(appEntity1);
+        appRepository.save(appEntity2);
+        appRepository.save(appEntity3);
+
+        int spaceId = spaceEntity.getId();
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/spaces/" + spaceId + "/apps")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", is("app1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name", is("app3")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].diskAlloc", is(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].diskAlloc", is(20)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].spaceId", is(spaceEntity.getId())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].spaceId", is(spaceEntity.getId())));
+    }
 }

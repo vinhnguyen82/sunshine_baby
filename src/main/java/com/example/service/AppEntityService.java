@@ -4,6 +4,8 @@ import com.example.model.AppEntity;
 import com.example.repository.AppRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AppEntityService {
 
@@ -18,5 +20,9 @@ public class AppEntityService {
         appEntity.setSpaceId(spaceId);
 
         return appRepository.save(appEntity);
+    }
+
+    public List<AppEntity> findAllApps(int spaceId) {
+        return appRepository.findAllBySpaceId(spaceId);
     }
 }
