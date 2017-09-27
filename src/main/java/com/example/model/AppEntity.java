@@ -12,14 +12,16 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class SpaceEntity {
+public class AppEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    private int spaceId;
+
     private String name;
 
-    private int disk;
+    private int diskAlloc;
 
-    private int memory;
+    private int memoryAlloc;
 }

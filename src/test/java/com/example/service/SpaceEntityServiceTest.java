@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class SpaceEntityServiceTest {
 
     @Mock
-    SpaceRepository repository;
+    SpaceRepository spaceRepository;
 
     @InjectMocks
     SpaceEntityService spaceEntityService;
@@ -31,10 +31,10 @@ public class SpaceEntityServiceTest {
     public void createSpace_returnsSpaceEntity() {
         SpaceEntity spaceEntity = SpaceEntity.builder().build();
 
-        when(repository.save(any(SpaceEntity.class))).thenReturn(spaceEntity);
+        when(spaceRepository.save(any(SpaceEntity.class))).thenReturn(spaceEntity);
 
         spaceEntityService.createSpace(spaceEntity);
-        verify(repository).save(spaceEntity);
+        verify(spaceRepository).save(spaceEntity);
     }
 
     @Test
@@ -42,37 +42,37 @@ public class SpaceEntityServiceTest {
         SpaceEntity spaceEntity1 = SpaceEntity.builder().build();
         SpaceEntity spaceEntity2 = SpaceEntity.builder().build();
 
-        when(repository.findAll()).thenReturn(Arrays.asList(spaceEntity1, spaceEntity2));
+        when(spaceRepository.findAll()).thenReturn(Arrays.asList(spaceEntity1, spaceEntity2));
 
         spaceEntityService.getSpaces();
-        verify(repository).findAll();
+        verify(spaceRepository).findAll();
     }
 
     @Test
     public void getSpace_returnsTheSpaceWithTheGivenId() {
         SpaceEntity spaceEntity = SpaceEntity.builder().build();
 
-        when(repository.findOne(anyInt())).thenReturn(spaceEntity);
+        when(spaceRepository.findOne(anyInt())).thenReturn(spaceEntity);
 
         spaceEntityService.getSpace(12345);
-        verify(repository).findOne(12345);
+        verify(spaceRepository).findOne(12345);
     }
 
     @Test
     public void updateSpace_ReturnsAnUpdatedSpace() {
         SpaceEntity spaceEntity = SpaceEntity.builder().build();
 
-        when(repository.save(any(SpaceEntity.class))).thenReturn(spaceEntity);
+        when(spaceRepository.save(any(SpaceEntity.class))).thenReturn(spaceEntity);
 
         spaceEntityService.updateSpace(spaceEntity, 123);
 
-        verify(repository).save(spaceEntity);
+        verify(spaceRepository).save(spaceEntity);
     }
 
     @Test
     public void removeSpace_RemovesASpace() {
         spaceEntityService.removeSpace(123);
 
-        verify(repository).delete(123);
+        verify(spaceRepository).delete(123);
     }
 }

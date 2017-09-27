@@ -10,11 +10,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/spaces")
-public class spaceController {
+public class SpaceController {
 
     SpaceEntityService spaceEntityService;
 
-    public spaceController(SpaceEntityService spaceEntityService) {
+    public SpaceController(SpaceEntityService spaceEntityService) {
         this.spaceEntityService = spaceEntityService;
     }
 
