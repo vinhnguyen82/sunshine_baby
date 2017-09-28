@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "enzyme": "^3.0.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-scripts": "1.0.14"
+    "enzyme": "^2.8.0",
+    "react": "15.6.2",
+    "react-dom": "^15.0.0",
+    "react-polyfill": "^0.0.2",
+    "react-scripts": "1.0.14",
+    "react-test-renderer": "15"
   },
   "scripts": {
     "build": "react-scripts build",
