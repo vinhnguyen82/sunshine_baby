@@ -17,16 +17,16 @@ class App extends Component {
         Event.preventDefault()
         let data = {
             name: formData.target.Name.value,
-            memory: formData.target.Memory.value,
-            disk: formData.target.Disk.value
+            memory: parseInt(formData.target.Memory.value),
+            disk: parseInt(formData.target.Disk.value)
         }
         fetch('localhost:8080/spaces', {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json"
-            },
-        })
+            }
+        }).then((response) => alert(response))
     }
     get addSpaceForm() {
         if(this.state.addSpaceFormActive) {
