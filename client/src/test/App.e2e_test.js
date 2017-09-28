@@ -1,5 +1,4 @@
 Feature('Home Page')
-
 Scenario('user can Add a space', (I) => {
     I.amOnPage('/')
     I.dontSee('jones 0%')
